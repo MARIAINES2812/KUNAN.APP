@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KUNAN</title>
+  <link rel="icon" href="https://kunanmascotas.mitiendanube.com/favicon.ico">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f6f6f6;
+      color: #333;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    header img {
+      width: 120px;
+      border-radius: 10px;
+    }
+    h1 {
+      margin: 10px 0;
+      color: #009879;
+    }
+    .producto, form, .total {
+      background: white;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    label {
+      margin-top: 10px;
+      display: block;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #009879;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    #total {
+      font-size: 18px;
+      font-weight: bold;
+      color: #009879;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="https://kunanmascotas.mitiendanube.com/files/kunan-logo.png" alt="KUNAN Logo" onerror="this.src='https://via.placeholder.com/120x120?text=KUNAN'">
+    <h1>KUNAN</h1>
+    <p>Comida real, para que vivan más y mejor</p>
+  </header>
+
+  <div class="producto">
+    <h2>Productos</h2>
+    <label>Producto</label>
+    <select id="producto">
+      <option value="Perros - 500g" data-precio="3.5">Comida Natural para Perros – 500g ($3,50)</option>
+      <option value="Perros - 1Kg" data-precio="6.5">Comida Natural para Perros – 1Kg ($6,50)</option>
+      <option value="Gatos - 500g" data-precio="3.5">Comida Natural para Gatos – 500g ($3,50)</option>
+    </select>
+
+    <label>Cantidad</label>
+    <input type="number" id="cantidad" min="1" value="1" />
+
+    <label>Zona de entrega</label>
+    <select id="zona">
+      <option value="Centro" data-envio="2">Centro ($2,00)</option>
+      <option value="Norte" data-envio="2.5">Norte ($2,50)</option>
+      <option value="Sur" data-envio="2.5">Sur ($2,50)</option>
+      <option value="Valles" data-envio="3">Valles ($3,00)</option>
+    </select>
+  </div>
+
+  <div class="total">
+    <h2>Total a pagar</h2>
+    <p id="total">$0.00</p>
+  </div>
+
+  <form id="formulario">
+    <label>Nombre</label>
+    <input type="text" id="nombre" required />
+
+    <label>Dirección exacta</label>
+    <input type="text" id="direccion" required />
+
+    <label>Teléfono</label>
+    <input type="text" id="telefono" required />
+
+    <button type="submit">Enviar Pedido por WhatsApp</button>
+  </form>
+
+  <script>
+    const productoEl = document.getElementById("producto");
+    const cantidadEl = document.getElementById("cantidad");
+    const zonaEl = document.getElementById("zona");
+    const totalEl = document.getElementById("total");
+
+    function calcularTotal() {
+      const precio = parseFloat(productoEl.selectedOptions[0].dataset.precio);
+      const envio = parseFloat(zonaEl.selectedOptions[0].dataset.envio);
+      const cantidad = parseInt(cantidadEl.value);
+      const subtotal = precio * cantidad;
+      const total = subtotal + envio;
+      totalEl.textContent = "$" + total.toFixed(2);
+      return total;
+    }
+
+    productoEl.addEventListener("change", calcularTotal);
+    cantidadEl.addEventListener("input", calcularTotal);
+    zonaEl.addEventListener("change", calcularTotal);
+    calcularTotal(); // inicial
+
+    document.getElementById("formulario").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const nombre = document.getElementById("nombre").value;
+      const direccion = document.getElementById("direccion").value;
+      const telefono = document.getElementById("telefono").value;
+      const producto = productoEl.value;
+      const cantidad = cantidadEl.value;
+      const zona = zonaEl.value;
+      const envio = zonaEl.selectedOptions[0].dataset.envio;
+      const total = calcularTotal();
+
+      const mensaje = `¡Hola! Soy ${nombre}, quiero pedir:\n\n✅ Producto: ${producto}\n📦 Cantidad: ${cantidad}\n🚚 Zona de entrega: ${zona} ($${envio})\n📍 Dirección: ${direccion}\n📞 Teléfono: ${telefono}\n💰 Total: $${total.toFixed(2)}`;
+      
+      const url = `https://wa.me/593963687264?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, "_blank");
+    });
+  </script>
+</body>
+</html>
